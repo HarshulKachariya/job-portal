@@ -208,7 +208,7 @@ const DisplayDetails = () => {
                 <FaBookmark className="text-emerald-600 text-4xl" />
               )}
             </div>
-            <button onClick={() => handleClickUnset(saved[0].id)}>unset</button>
+            {/* <button onClick={() => handleClickUnset(saved[0].id)}>unset</button> */}
             <div className="rounded-md bg-emerald-600 p-4 text-xl uppercase text-white hover:text-gray-800 cursor-pointer">
               <NavLink to={`/appliedJob/${id}`}>Apply position</NavLink>
             </div>
