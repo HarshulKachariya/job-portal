@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import InputBox from "./InputBox";
 import { NavLink, useNavigate } from "react-router-dom";
 import { signInWithEmailAndPassword, onAuthStateChanged } from "firebase/auth";
@@ -20,13 +20,14 @@ const SignIn = () => {
       onAuthStateChanged(auth, (user) => {
         if (user) {
           const uid = user.uid;
-          console.log(uid);
+          // console.log(uid);
+          localStorage.setItem("token", user.refreshToken);
         } else {
           console.log("user not signed in");
         }
       });
       toast.success("Logged in successfully!");
-      navigate("/postedJob"); // Navigate to the "/postedJob" route after successful login
+      navigate("/viewJob"); // Navigate to the "/postedJob" route after successful login
     } catch (error) {
       toast.error("You entered a wrong username or password.", error.message); // Log the error message
     }

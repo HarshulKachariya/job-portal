@@ -4,7 +4,7 @@ import "./App.jsx";
 function App() {
   return (
     <>
-      <main className="">
+      <main className="mx-auto">
         <Header />
         <Outlet />
       </main>

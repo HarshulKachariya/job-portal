@@ -15,7 +15,7 @@ const Header = () => {
 
   const toggleActive = () => {
     setToggle(!toggle);
-    console.log("button clicked....");
+    // console.log("button clicked....");
   };
 
   // console.log(isLoggedIn);
@@ -24,14 +24,13 @@ const Header = () => {
     try {
       Auth.onAuthStateChanged((user) => {
         if (user) {
-          console.log("user is logged in");
+          // console.log("user is logged in");
           setIsLoggedIn(true);
-          localStorage.setItem("token", user.refreshToken);
         } else {
-          console.log("user is not logged in");
+          // console.log("user is not logged in");
           setIsLoggedIn(false);
         }
-        console.log(user);
+        // console.log(user);
       });
     } catch (error) {
       console.log(error);
@@ -45,6 +44,12 @@ const Header = () => {
     SignOut();
     navigate("/login");
   };
+
+  // useEffect(() => {
+  //   if (localStorage.getItem("token")) {
+  //     navigate("/viewJob");
+  //   }
+  // });
 
   return (
     <header className="w-full py-5 sm:px-10 px-10 flex justify-between items-center bg-emerald-600 shadow-xl fixed">
@@ -113,7 +118,9 @@ const Header = () => {
               key={item.id}
               className="p-4 border-b rounded-xl hover:bg-[#00df9a] duration-300 hover:text-black text-white cursor-pointer border-gray-600"
             >
-              <NavLink to={`${item.link}`}>{item.name}</NavLink>
+              <NavLink to={`${item.link}`} onClick={() => setToggle(false)}>
+                {item.name}
+              </NavLink>
             </li>
           ))}
         </ul>

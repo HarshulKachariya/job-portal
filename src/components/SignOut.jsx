@@ -3,15 +3,16 @@ import React from "react";
 import { useNavigate } from "react-router-dom";
 
 import { auth } from "../firebase";
+import { toast } from "react-toastify";
 
 const SignOut = () => {
   const navigate = useNavigate();
   const handleSignOut = async () => {
     try {
       await auth.signOut();
+      localStorage.removeItem("token");
       navigate("/login");
-
-      console.log("signedout");
+      toast.success("Successfully logedout...");
     } catch (error) {
       console.log(error);
     }

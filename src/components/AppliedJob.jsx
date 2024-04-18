@@ -84,7 +84,7 @@ const Contact = () => {
       console.log(error);
     }
 
-    console.log(formData);
+    // console.log(formData);
   };
 
   return (

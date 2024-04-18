@@ -4,6 +4,8 @@ import { NavLink } from "react-router-dom";
 import FeatureSection from "./Feature";
 import ReviewSection from "./ReviewSection";
 
+import hero from "../assets/hero.jpg";
+
 import { auth } from "../firebase";
 
 function Home() {
@@ -25,19 +27,19 @@ function Home() {
 
   return (
     <>
-      <div className="flex flex-col md:flex-row bg-gray-100 min-h-screen">
+      <div className="flex flex-col md:flex-row bg-gray-100 max-h-screen">
         {/* Left Section - Image */}
-        <div className="w-full md:w-1/2">
+        <div className="w-full pt-10 flex-1 max-auto md:w-1/2">
           <img
-            src="https://t4.ftcdn.net/jpg/05/05/61/73/240_F_505617309_NN1CW7diNmGXJfMicpY9eXHKV4sqzO5H.jpg"
+            src={hero}
             alt="Job Portal"
-            className="object-cover w-full h-full"
+            className="object-cover w-full p-10 h-full"
           />
         </div>
 
         {/* Right Section - Content */}
         <div className="w-full md:w-1/2 p-8 flex flex-col justify-center items-center">
-          <h1 className="text-3xl md:text-4xl font-bold text-gray-800 mb-4">
+          <h1 className="text-3xl md:text-4xl  font-bold text-gray-800 mb-4">
             <>
               Welcome{" "}
               <span className="text-emerald-600 font-bold">

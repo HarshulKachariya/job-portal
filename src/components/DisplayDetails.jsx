@@ -82,7 +82,7 @@ const DisplayDetails = () => {
   const handleClickUnset = (id) => {
     dispatch(removePost(id));
     setBookMark(false);
-    console.log("unset");
+    // console.log("unset");
     toast.success("post unsaved sucessfully");
   };
 
@@ -91,7 +91,7 @@ const DisplayDetails = () => {
       if (bookMark) {
         dispatch(removePost(saveJobPost.id));
         setBookMark(false);
-        console.log("unset");
+        // console.log("unset");
         toast.success("post unsaved sucessfully");
       } else {
         const { jobDeadline, title, company, salary } = jobDetails;
@@ -108,7 +108,7 @@ const DisplayDetails = () => {
           })
         );
         setBookMark(true);
-        console.log("set");
+        // console.log("set");
         toast.success("post save sucessfully");
       }
     } catch (error) {

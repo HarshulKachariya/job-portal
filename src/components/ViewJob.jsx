@@ -21,7 +21,7 @@ const ViewJob = () => {
       }
     };
 
-    console.log(jobs);
+    // console.log(jobs);
 
     setTimeout(() => {
       fetchSavedJobs();

@@ -38,7 +38,7 @@ const PostedJob = () => {
     }
   }, [userId, jobs]);
 
-  console.log(filter);
+  // console.log(filter);
 
   useEffect(() => {
     fetchJobs();

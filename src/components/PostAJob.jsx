@@ -23,7 +23,7 @@ const PostJob = () => {
 
   // get userID from auth firebase
   const uid = auth.currentUser.uid;
-  console.log(uid);
+  // console.log(uid);
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -36,7 +36,7 @@ const PostJob = () => {
       };
       await addDoc(collection(db, "job-listing"), formDataToSend);
       toast.success("Job posting added successfully!");
-      console.log(formDataToSend);
+      // console.log(formDataToSend);
       setFormData({
         title: "",
         salary: "",

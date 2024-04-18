@@ -39,7 +39,7 @@ const ReviewSection = () => {
           <h2 className="text-3xl font-bold text-gray-800 mb-8">
             Customer Reviews
           </h2>
-          <div className="flex flex-row gap-8">
+          <div className="flex flex-col md:flex-row gap-8 ">
             {reviews.map((review) => (
               <div
                 key={review.id}

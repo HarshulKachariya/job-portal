@@ -99,13 +99,13 @@ const Dashboard = () => {
     dispatch(removePost(id));
     // console.log(bookmarkedJobs);
     toast.success("post unsaved sucessfully");
-    console.log(id);
+    // console.log(id);
   };
   const handleClickRemoveApply = (id) => {
     dispatch(removeApplyPost(id));
     // console.log(bookmarkedJobs);
     toast.success("post unsaved sucessfully");
-    console.log(id);
+    // console.log(id);
   };
 
   const toggleClick = () => {

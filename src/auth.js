@@ -7,16 +7,13 @@ const auth = getAuth();
 onAuthStateChanged(auth, (user) => {
   if (user) {
     const uid = user.uid;
-    console.log(uid);
-  } else {
-    console.log("====================================");
-    console.log("user not signed in");
-    console.log("====================================");
+    // console.log(uid);
   }
 });
 
 function SignOut() {
   Auth.signOut();
+  localStorage.removeItem("token");
 }
 
 export { SignOut };

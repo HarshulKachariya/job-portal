@@ -4,6 +4,7 @@ import InputBox from "./InputBox";
 import { db } from "../firebase";
 
 import { addDoc, collection, serverTimestamp } from "firebase/firestore";
+import { toast } from "react-toastify";
 
 const Contact = () => {
   const [formData, setFormData] = useState({
@@ -38,7 +39,7 @@ const Contact = () => {
         email: "",
         message: "",
       });
-      console.log("message sent successfully");
+      toast.success("message sent successfully");
     } catch (error) {
       console.log(error);
     }
@@ -47,7 +48,7 @@ const Contact = () => {
   };
 
   return (
-    <section className="px-10 sm:px-10 py-20 md:px-10">
+    <section className="px-10  py-20 md:px-10">
       <h1 class="text-3xl font-semibold text-center mb-6 uppercase">
         Contact us
       </h1>
@@ -96,12 +97,12 @@ const Contact = () => {
         </form>
       </div>
 
-      <div className="flex flex-row gap-3 justify-center items-center mt-5">
-        <div className="mb-4">
+      <div className="flex flex-col md:flex-row items-baseline md:items-baseline md:justify-center md:gap-6 gap-3 justify-center  mt-5">
+        <div className="mb-4 ">
           <p className="font-semibold">Company Email:</p>
           <p>enqiry@jobportal.com</p>
         </div>
-        <div className="mb-4">
+        <div className="">
           <p className="font-semibold">Phone Number:</p>
           <p>+91-9872536821</p>
         </div>
