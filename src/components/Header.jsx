@@ -52,7 +52,7 @@ const Header = () => {
   // });
 
   return (
-    <header className="w-full py-5 sm:px-10 px-10 flex justify-between items-center bg-emerald-600 shadow-xl fixed">
+    <header className="w-full py-5 sm:px-10 px-10 flex justify-between text-white items-center bg-emerald-600 shadow-xl fixed">
       <nav className="navbar flex w-full ms-0 me-0 relative max-w-[1120px]">
         <h2 className="text-xl font-bold">JOBS</h2>
         <div className="center flex flex-1 justify-center max-sm:hidden max-md:hidden">
@@ -62,8 +62,8 @@ const Header = () => {
               key={item.name}
               className={({ isActive, isPending }) =>
                 !isActive
-                  ? "px-5 text-sm font-semibold uppercase cursor-pointer text-gray hover:text-white transition-all"
-                  : "px-5 text-sm font-semibold uppercase cursor-pointer text-white "
+                  ? "px-5 text-sm font-semibold uppercase  cursor-pointer text-gray hover:text-gray-700 transition-all"
+                  : "px-5 text-sm font-semibold uppercase cursor-pointer text-[#111827] "
               }
             >
               {item.name}
@@ -78,8 +78,8 @@ const Header = () => {
                 key={item.name}
                 className={({ isActive, isPending }) =>
                   !isActive
-                    ? "px-5 text-sm font-semibold uppercase cursor-pointer text-gray hover:text-white transition-all"
-                    : "px-5 text-sm font-semibold uppercase cursor-pointer text-white "
+                    ? "px-5 text-sm font-semibold uppercase cursor-pointer text-gray hover:text-gray-700 transition-all"
+                    : "px-5 text-sm font-semibold uppercase cursor-pointer text-[#111827] "
                 }
               >
                 {item.name}
@@ -116,7 +116,7 @@ const Header = () => {
           {navItem.map((item) => (
             <li
               key={item.id}
-              className="p-4 border-b rounded-xl hover:bg-[#00df9a] duration-300 hover:text-black text-white cursor-pointer border-gray-600"
+              className="p-4 border-b rounded-xl hover:bg-[#00df9a] duration-300 hover:text-gray-600 text-white cursor-pointer border-gray-600"
             >
               <NavLink to={`${item.link}`} onClick={() => setToggle(false)}>
                 {item.name}
@@ -129,7 +129,7 @@ const Header = () => {
             auth.map((item) => (
               <li
                 key={item.id}
-                className="p-4 border-b rounded-xl hover:bg-[#00df9a] duration-300 hover:text-black text-white cursor-pointer border-gray-600"
+                className="p-4 border-b rounded-xl hover:bg-[#00df9a] duration-300 hover:text-gray-600 text-white cursor-pointer border-gray-600"
               >
                 <NavLink to={`${item.link}`}>{item.name}</NavLink>
               </li>

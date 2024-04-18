@@ -2,7 +2,7 @@ import React from "react";
 
 const AboutPage = () => {
   return (
-    <div className="bg-gray-100 min-h-screen flex justify-center items-center">
+    <div className="bg-gray-100 min-h-screen flex justify-center items-center pt-20">
       <div className="container mx-auto px-4 py-8 flex flex-col gap-3 mt-3">
         <div className="max-w-md mx-auto text-center p-6 bg-white rounded-lg shadow-md">
           <h1 className="text-4xl font-bold text-gray-800 mb-8 text-center">
