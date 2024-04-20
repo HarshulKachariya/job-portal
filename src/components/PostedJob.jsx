@@ -56,8 +56,10 @@ const PostedJob = () => {
       <div className="grid grid-cols-1 md:grid-cols-2">
         {loading ? (
           <Loader />
-        ) : (
+        ) : filter.length > 0 ? (
           filter.map((job) => <Card key={job.id} {...job.data} id={job.id} />)
+        ) : (
+          <h1 className="text-center text-2xl font-semibold">No Jobs Posted</h1>
         )}
       </div>
     </div>
