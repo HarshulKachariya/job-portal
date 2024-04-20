@@ -36,6 +36,40 @@ const DisplayDetails = () => {
   const userId = auth.currentUser;
   // const userId = user ? user.uid : null;
 
+  // Function to set a cookie
+  const setCookie = (cname, cvalue, exdays) => {
+    const d = new Date();
+    d.setTime(d.getTime() + exdays * 24 * 60 * 60 * 1000);
+    const expires = "expires=" + d.toUTCString();
+    document.cookie = cname + "=" + cvalue + ";" + expires + ";path=/";
+  };
+
+  // Function to get a cookie
+  const getCookie = (cname) => {
+    const name = cname + "=";
+    const decodedCookie = decodeURIComponent(document.cookie);
+    const ca = decodedCookie.split(";");
+    for (let i = 0; i < ca.length; i++) {
+      let c = ca[i];
+      while (c.charAt(0) === " ") {
+        c = c.substring(1);
+      }
+      if (c.indexOf(name) === 0) {
+        return c.substring(name.length, c.length);
+      }
+    }
+    return "";
+  };
+
+  //Check if the user has already Save the job
+  useEffect(() => {
+    // Check if the bookmark cookie exists
+    const bookmarkCookie = getCookie("bookmark");
+    if (bookmarkCookie && bookmarkCookie === id) {
+      setBookMark(true);
+    }
+  }, []);
+
   useEffect(() => {
     const fetchJobDetails = async () => {
       try {
@@ -86,42 +120,35 @@ const DisplayDetails = () => {
 
   const handleClickUnset = (id) => {
     dispatch(removePost(id));
+    setCookie("bookmark", "", -1);
     setBookMark(false);
-    // console.log("unset");
     toast.success("post unsaved sucessfully");
+    console.log("unset");
   };
 
-  const handleBookmarkClick = async () => {
+  const handleClickSet = () => {
     try {
-      if (bookMark) {
-        dispatch(removePost(saveJobPost.id));
-        setBookMark(false);
-        // console.log("unset");
-        toast.success("post unsaved sucessfully");
-      } else {
-        const { jobDeadline, title, company, salary } = jobDetails;
+      setCookie("bookmark", id, 365); //365 means Expire in 1 Year
+      const { jobDeadline, title, company, salary } = jobDetails;
 
-        dispatch(
-          addPost({
-            save_id: id,
-            userId: userId.uid,
-            jobDeadline,
-            title,
-            company,
-            salary,
-            save_post_at: serverTimestamp(),
-          })
-        );
-        setBookMark(true);
-        // console.log("set");
-        toast.success("post save sucessfully");
-      }
+      dispatch(
+        addPost({
+          save_id: id,
+          userId: userId.uid,
+          jobDeadline,
+          title,
+          company,
+          salary,
+          save_post_at: serverTimestamp(),
+        })
+      );
+      setBookMark(true);
+      toast.success("post save sucessfully");
     } catch (error) {
-      console.log("Error handling bookmark click:", error);
+      console.log(error);
     }
+    console.log(id, "applied job id");
   };
-
-  // console.log(id, "applied job id");
 
   return (
     <>
@@ -210,17 +237,17 @@ const DisplayDetails = () => {
                 </div>
               </div>
               <div className="flex items-center justify-center mt-6">
-                <div
-                  onClick={handleBookmarkClick}
-                  className="mr-4 cursor-pointer"
-                >
-                  {!bookMark ? (
-                    <FaRegBookmark className="text-emerald-600 text-4xl" />
-                  ) : (
-                    <FaBookmark className="text-emerald-600 text-4xl" />
-                  )}
-                </div>
-                {/* <button onClick={() => handleClickUnset(saved[0].id)}>unset</button> */}
+                {!bookMark ? (
+                  <FaRegBookmark
+                    onClick={handleClickSet}
+                    className="text-emerald-600 text-4xl"
+                  />
+                ) : (
+                  <FaBookmark
+                    onClick={() => handleClickUnset(saved[0].id)}
+                    className="text-emerald-600 text-4xl"
+                  />
+                )}
                 <div className="rounded-md bg-emerald-600 p-4 text-xl uppercase text-white hover:text-gray-800 cursor-pointer">
                   <NavLink to={`/appliedJob/${id}`}>Apply position</NavLink>
                 </div>

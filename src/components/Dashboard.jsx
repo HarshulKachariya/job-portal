@@ -181,7 +181,7 @@ const Dashboard = () => {
                         to={`/details/${row.id}`}
                         className="border-emerald-600 border p-1 rounded-md hover:text-white hover:bg-emerald-600"
                       >
-                        view details
+                        {row.status}
                       </NavLink>
                     </TableCell>
                   </TableRow>
