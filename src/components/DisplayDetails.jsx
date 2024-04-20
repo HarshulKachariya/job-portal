@@ -26,26 +26,23 @@ import Loader from "./Loader";
 const DisplayDetails = () => {
   const [bookMark, setBookMark] = useState(false);
   const [jobDetails, setJobDetails] = useState(null);
-  const [saveJobPost, setSaveJobPost] = useState([]);
-  const [saved, setSaved] = useState([]);
-
   const [isLoadding, setIsLoadding] = useState(true);
   const { id } = useParams();
   const dispatch = useDispatch();
 
   const userId = auth.currentUser;
-  // const userId = user ? user.uid : null;
 
-  // Function to set a cookie
-  const setCookie = (cname, cvalue, exdays) => {
+  // Function to set a cookie with an array value
+  const setCookieArray = (cname, cvalue, exdays) => {
     const d = new Date();
     d.setTime(d.getTime() + exdays * 24 * 60 * 60 * 1000);
     const expires = "expires=" + d.toUTCString();
-    document.cookie = cname + "=" + cvalue + ";" + expires + ";path=/";
+    const cookieValues = JSON.stringify(cvalue); // Convert array to JSON string
+    document.cookie = cname + "=" + cookieValues + ";" + expires + ";path=/";
   };
 
-  // Function to get a cookie
-  const getCookie = (cname) => {
+  // Function to get an array from a cookie
+  const getCookieArray = (cname) => {
     const name = cname + "=";
     const decodedCookie = decodeURIComponent(document.cookie);
     const ca = decodedCookie.split(";");
@@ -55,20 +52,20 @@ const DisplayDetails = () => {
         c = c.substring(1);
       }
       if (c.indexOf(name) === 0) {
-        return c.substring(name.length, c.length);
+        const cookieValues = c.substring(name.length, c.length);
+        return JSON.parse(cookieValues); // Parse JSON string to array
       }
     }
-    return "";
+    return [];
   };
 
-  //Check if the user has already Save the job
+  // Check if the user has already saved the job
   useEffect(() => {
-    // Check if the bookmark cookie exists
-    const bookmarkCookie = getCookie("bookmark");
-    if (bookmarkCookie && bookmarkCookie === id) {
+    const savedPosts = getCookieArray("savedPosts");
+    if (savedPosts.includes(id)) {
       setBookMark(true);
     }
-  }, []);
+  }, [id]);
 
   useEffect(() => {
     const fetchJobDetails = async () => {
@@ -88,49 +85,28 @@ const DisplayDetails = () => {
 
     setTimeout(() => {
       fetchJobDetails();
-    }, 1000);
+    }, 300);
   }, [id]);
 
-  useEffect(() => {
-    const fetchSavePost = async () => {
-      try {
-        const temp = [];
-        const querySnapshot = await getDocs(collection(db, "savePost"));
+  const handleClickUnset = (postId) => {
+    dispatch(removePost(postId));
 
-        querySnapshot.forEach((doc) => {
-          temp.push({ id: doc.id, ...doc.data() });
-        });
-        setSaveJobPost(temp);
-      } catch (error) {
-        console.log(error);
-      }
-    };
-
-    setTimeout(() => {
-      fetchSavePost();
-    }, 1000);
-  }, []);
-
-  useEffect(() => {
-    const filterSavedPost = saveJobPost.filter((job) => {
-      return job.save_id === id;
-    });
-    setSaved(filterSavedPost);
-  }, [saveJobPost, id]);
-
-  const handleClickUnset = (id) => {
-    dispatch(removePost(id));
-    setCookie("bookmark", "", -1);
+    // Remove postId from savedPosts array in cookie
+    const savedPosts = getCookieArray("savedPosts");
+    const updatedSavedPosts = savedPosts.filter((postId) => postId !== id);
+    setCookieArray("savedPosts", updatedSavedPosts, 365);
     setBookMark(false);
-    toast.success("post unsaved sucessfully");
-    console.log("unset");
+    toast.success("post unsaved successfully");
   };
 
   const handleClickSet = () => {
     try {
-      setCookie("bookmark", id, 365); //365 means Expire in 1 Year
-      const { jobDeadline, title, company, salary } = jobDetails;
+      // Add postId to savedPosts array in cookie
+      const savedPosts = getCookieArray("savedPosts");
+      const updatedSavedPosts = [...savedPosts, id];
+      setCookieArray("savedPosts", updatedSavedPosts, 365);
 
+      const { jobDeadline, title, company, salary } = jobDetails;
       dispatch(
         addPost({
           save_id: id,
@@ -143,7 +119,7 @@ const DisplayDetails = () => {
         })
       );
       setBookMark(true);
-      toast.success("post save sucessfully");
+      toast.success("post saved successfully");
     } catch (error) {
       console.log(error);
     }
@@ -244,7 +220,7 @@ const DisplayDetails = () => {
                   />
                 ) : (
                   <FaBookmark
-                    onClick={() => handleClickUnset(saved[0].id)}
+                    onClick={() => handleClickUnset(id)}
                     className="text-emerald-600 text-4xl"
                   />
                 )}
