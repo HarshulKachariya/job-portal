@@ -12,6 +12,7 @@ import {
   serverTimestamp,
 } from "firebase/firestore";
 import { toast } from "react-toastify";
+import TextArea from "./TextArea";
 
 const Contact = () => {
   const user = auth.currentUser;
@@ -119,17 +120,18 @@ const Contact = () => {
           />
 
           <label>About:</label>
-          <textarea
+          <TextArea
             type="textarea"
             name="about"
             onFocus={"about"}
             value={formData.about}
             onChange={handleChange}
-            placeholder={"Enter job  description"}
+            placeholder={"About Your Self"}
             rows="4"
             cols="50"
             id="about"
             className="w-full p-3 border-[1px] rounded-md border-emerald-600 "
+            required
           />
           <label>Upload CV:</label>
           <InputBox

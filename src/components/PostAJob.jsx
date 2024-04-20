@@ -4,6 +4,7 @@ import { RxCross2 } from "react-icons/rx";
 import { db, auth } from "../firebase";
 import { collection, addDoc, serverTimestamp } from "firebase/firestore";
 import { toast } from "react-toastify";
+import TextArea from "./TextArea";
 
 const PostJob = () => {
   const [formData, setFormData] = useState({
@@ -137,7 +138,7 @@ const PostJob = () => {
             id="company"
           />
           <label>Description:</label>
-          <textarea
+          <TextArea
             onFocus={"description"}
             value={formData.description}
             onChange={handleChange}
@@ -146,6 +147,7 @@ const PostJob = () => {
             cols="50"
             id="description"
             className="w-full p-3 border-[1px] rounded-md border-emerald-600 "
+            required
           />
           <label>Job Category (Comma separated):</label>
           <InputBox

@@ -4,8 +4,14 @@ import Card from "./Card";
 import { db } from "../firebase";
 import { collection, getDocs } from "firebase/firestore";
 
+import { ThreeDots } from "react-loader-spinner";
+import { Tuple } from "@reduxjs/toolkit";
+import Loader from "./Loader";
+
 const ViewJob = () => {
   const [jobs, setJobs] = useState([]);
+
+  const [isLoading, setIsLoading] = useState(true);
 
   useEffect(() => {
     const fetchSavedJobs = async () => {
@@ -16,6 +22,7 @@ const ViewJob = () => {
           tempJobs.push({ data: doc.data(), id: doc.id });
         });
         setJobs(tempJobs);
+        setIsLoading(false);
       } catch (error) {
         console.error("Error fetching jobs:", error);
       }
@@ -35,9 +42,11 @@ const ViewJob = () => {
         Available Jobs
       </h1>
       <div className="grid grid-cols-1 md:grid-cols-2">
-        {jobs.map((job) => (
-          <Card key={job.id} {...job.data} id={job.id} />
-        ))}
+        {isLoading ? (
+          <Loader />
+        ) : (
+          jobs.map((job) => <Card key={job.id} {...job.data} id={job.id} />)
+        )}
       </div>
     </div>
   );

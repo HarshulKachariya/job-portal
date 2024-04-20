@@ -5,6 +5,7 @@ import { db } from "../firebase";
 
 import { addDoc, collection, serverTimestamp } from "firebase/firestore";
 import { toast } from "react-toastify";
+import TextArea from "./TextArea";
 
 const Contact = () => {
   const [formData, setFormData] = useState({
@@ -74,21 +75,22 @@ const Contact = () => {
             onFocus={"email"}
             value={formData.email}
             onChange={handleChange}
-            placeholder={"Enter a email contacted for this job"}
+            placeholder={"Enter a email to contact you"}
             id="email"
           />
           <label>Message:</label>
-          <textarea
+          <TextArea
             type="textarea"
             name=""
             onFocus={"description"}
             value={formData.message}
             onChange={handleChange}
-            placeholder={"Enter job  description"}
+            placeholder={"Type your Message..."}
             rows="4"
             cols="50"
             id="message"
             className="w-full p-3 border-[1px] rounded-md border-emerald-600 "
+            required
           />
 
           <button className="w-full p-3 border-[1px] text-white rounded-md bg-emerald-600 ">

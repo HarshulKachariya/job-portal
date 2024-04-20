@@ -35,7 +35,7 @@ const ReviewSection = () => {
   return (
     <>
       <section className="bg-gray-100 py-16">
-        <div className="container mx-auto px-4">
+        <div className="w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <h2 className="text-3xl font-bold text-gray-800 mb-8">
             Customer Reviews
           </h2>

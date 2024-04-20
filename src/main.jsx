@@ -30,6 +30,9 @@ import { store } from "./store/store.js";
 import { Provider } from "react-redux";
 
 import { auth } from "./firebase.js";
+import Loader from "./components/Loader.jsx";
+import ErrorPage from "./components/ErrorPage.jsx";
+import PrivateRoute from "./components/PrivateRoute.jsx";
 
 const AppWithRouter = () => {
   const [authuUser, setUser] = useState(null);
@@ -47,27 +50,31 @@ const AppWithRouter = () => {
   return (
     <Router>
       <Routes>
-        <Route path="/" element={<App />}>
+        <Route path="*" element={<ErrorPage />} />
+        <Route path="login" element={<SignIn />} />
+
+        <Route path="register" element={<SignUp />} />
+        <Route path="/" element={<PrivateRoute />}>
           <Route index element={<Home />} />
           <Route path="about" element={<About />} />
           <Route path="contact" element={<Contact />} />
-          {authuUser ? (
-            <>
-              <Route path="postAJob" element={<PostAJob />} />
-              <Route path="postedJob" element={<PostedJob />} />
-              <Route path="dashboard" element={<Dashboard />} />
-              <Route path="appliedJob/:id" element={<AppliedJob />} />
-              <Route path="details/:id" element={<DisplayDetails />} />
-              <Route path="viewJob" element={<ViewJob />} />
-            </>
+          <Route path="loader" element={<Loader />} />
+          <Route path="*" element={<Navigate to="/" />} />
+
+          {/* {authuUser ? (
+            <> */}
+          <Route path="postAJob" element={<PostAJob />} />
+          <Route path="postedJob" element={<PostedJob />} />
+          <Route path="dashboard" element={<Dashboard />} />
+          <Route path="appliedJob/:id" element={<AppliedJob />} />
+          <Route path="details/:id" element={<DisplayDetails />} />
+          <Route path="viewJob" element={<ViewJob />} />
+          {/* </>
           ) : (
-            <>
-              <Route path="register" element={<SignUp />} />
-              <Route path="login" element={<SignIn />} />
-              <Route path="logout" element={<SignOut />} />
-              <Route path="*" element={<Navigate to="/login" replace />} />
-            </>
-          )}
+            <> */}
+          <Route path="logout" element={<SignOut />} />
+          {/* </>
+          )} */}
         </Route>
       </Routes>
     </Router>

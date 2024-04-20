@@ -11,6 +11,7 @@ const InputBox = ({ name, type, placeholder, id, onChange, value, accept }) => {
       value={value}
       accept={accept}
       className="w-full p-3 border-[1px] rounded-md border-emerald-600 "
+      required
     />
   );
 };
