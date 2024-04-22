@@ -23,6 +23,7 @@ const DisplayDetails = () => {
   const [bookMark, setBookMark] = useState(false);
   const [job, setJob] = useState([]);
   const [isLoadding, setIsLoadding] = useState(true);
+
   const { id } = useParams();
   const dispatch = useDispatch();
 
@@ -80,9 +81,7 @@ const DisplayDetails = () => {
         console.error("Error fetching job details:", error);
       }
     };
-    setTimeout(() => {
-      fetchJobDetails();
-    }, 300);
+    setTimeout(fetchJobDetails(), 300);
   }, [id]);
 
   const handleClickUnset = (postId) => {
@@ -106,7 +105,9 @@ const DisplayDetails = () => {
       save_id: job.id,
     });
   });
-  // console.log(...jobDetail);
+  // console.log(job, userId.uid);
+  const isUserPost = job.some((job) => job.uid === userId.uid);
+  // console.log(isUserPost);
 
   const handleClickSet = () => {
     try {
@@ -236,7 +237,11 @@ const DisplayDetails = () => {
                   />
                 )}
                 <div className="rounded-md bg-emerald-600 p-4 text-xl uppercase text-white hover:text-gray-800 cursor-pointer">
-                  <NavLink to={`/appliedJob/${id}`}>Apply position</NavLink>
+                  {isUserPost ? (
+                    <NavLink to={`/appliedJob/${id}`}>Delete Post</NavLink>
+                  ) : (
+                    <NavLink to={`/appliedJob/${id}`}>Apply position</NavLink>
+                  )}
                 </div>
               </div>
               <div className="grid grid-cols-1 sm:grid-cols-2 mt-10 gap-6 md:gap-8">

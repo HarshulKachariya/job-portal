@@ -1,10 +1,17 @@
 import React, { useState, useEffect } from "react";
+import { useNavigate } from "react-router-dom"; // Import useHistory hook for redirection
 import Card from "./Card";
 import { auth, db } from "../firebase";
 import { collection, getDocs } from "firebase/firestore";
 import { ThreeDots } from "react-loader-spinner";
+import { useAuth } from "../context/AuthContext";
+
 import Loader from "./Loader";
+
 const PostedJob = () => {
+  const navigate = useNavigate(); // Initialize useHistory hook
+  const { jobDetails } = useAuth();
+
   const [jobs, setJobs] = useState([]);
   const [filter, setFilter] = useState([]);
 
@@ -13,19 +20,10 @@ const PostedJob = () => {
   const user = auth.currentUser;
   const userId = user ? user.uid : null;
 
-  const fetchJobs = async () => {
-    try {
-      const tempJobs = [];
-      const querySnapshot = await getDocs(collection(db, "job-listing"));
-      querySnapshot.forEach((doc) => {
-        tempJobs.push({ data: doc.data(), id: doc.id });
-      });
-      setJobs(tempJobs);
-      setLoading(false);
-    } catch (error) {
-      console.error("Error fetching jobs:", error);
-    }
-  };
+  useEffect(() => {
+    setJobs(jobDetails);
+    setLoading(false);
+  }, []);
 
   useEffect(() => {
     const temp = [];
@@ -43,11 +41,13 @@ const PostedJob = () => {
     }
   }, [userId, jobs]);
 
-  // console.log(filter);
+  // Function to handle redirection to PostAJob page with pre-filled values
+  const redirectToEditJob = (jobId) => {
+    // Construct the URL with query parameters
+    // const url = `/postAJob?jobId=${jobId}`;
+    navigate(`/postAJob/${jobId}`); // Redirect to the PostAJob page
+  };
 
-  useEffect(() => {
-    fetchJobs();
-  }, []);
   return (
     <div className="px-10 sm:px-10 py-20 md:px-10 w-full h-full">
       <h1 className="px-4 mx-2 py-2 uppercase tracking-wider border-b-2 border-b-emerald-600 text-3xl font-semibold">
@@ -57,7 +57,16 @@ const PostedJob = () => {
         {loading ? (
           <Loader />
         ) : filter.length > 0 ? (
-          filter.map((job) => <Card key={job.id} {...job.data} id={job.id} />)
+          filter.map((job) => (
+            <div onClick={() => redirectToEditJob(job.id)}>
+              <Card
+                key={job.id}
+                {...job.data}
+                id={job.id}
+                // Pass a click event handler to trigger redirection
+              />
+            </div>
+          ))
         ) : (
           <h1 className="w-screen h-screen text-center text-2xl font-semibold">
             No Jobs Posted

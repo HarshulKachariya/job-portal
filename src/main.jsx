@@ -62,6 +62,7 @@ const AppWithRouter = () => {
           <Route path="loader" element={<Loader />} />
 
           <Route path="*" element={<Navigate to="/" />} />
+          <Route path="postAJob/:jobId" element={<PostAJob />} />
           <Route path="postAJob" element={<PostAJob />} />
           <Route path="postedJob" element={<PostedJob />} />
           <Route path="dashboard" element={<Dashboard />} />

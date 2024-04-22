@@ -1,12 +1,24 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import InputBox from "./InputBox";
 import { RxCross2 } from "react-icons/rx";
 import { db, auth } from "../firebase";
-import { collection, addDoc, serverTimestamp } from "firebase/firestore";
+import {
+  collection,
+  doc,
+  updateDoc,
+  serverTimestamp,
+  getDoc,
+} from "firebase/firestore";
 import { toast } from "react-toastify";
 import TextArea from "./TextArea";
+import { useParams, useNavigate } from "react-router-dom"; // Import useNavigate hook
 
 const PostJob = () => {
+  const { jobId } = useParams(); // Get the job ID from URL params
+  const user = auth.currentUser;
+  const userId = user ? user.uid : null;
+  const navigate = useNavigate(); // Initialize the navigate function
+
   const [formData, setFormData] = useState({
     title: "",
     salary: "",
@@ -22,22 +34,60 @@ const PostJob = () => {
     newSkill: "",
   });
 
-  // get userID from auth firebase
-  const uid = auth.currentUser.uid;
-  // console.log(uid);
+  useEffect(() => {
+    const fetchJobDetails = async () => {
+      try {
+        const docRef = doc(db, "job-listing", jobId);
+        const docSnap = await getDoc(docRef);
+        if (docSnap.exists()) {
+          const data = docSnap.data();
+          // Set the form data with the fetched job details
+          setFormData({
+            title: data.title || "",
+            salary: data.salary || "",
+            email: data.email || "",
+            company: data.company || "",
+            description: data.description || "",
+            jobCategory: data.jobCategory ? data.jobCategory.join(", ") : "",
+            jobType: data.jobType || "fullTime",
+            jobExperience: data.jobExperience || "",
+            jobVacancy: data.jobVacancy || "",
+            jobDeadline: data.jobDeadline || "",
+            skills: data.skills || [],
+            newSkill: "",
+          });
+        } else {
+          console.log("No such document!");
+        }
+      } catch (error) {
+        console.log(error);
+      }
+    };
+
+    // Fetch job details only if jobId exists
+    if (jobId) {
+      fetchJobDetails();
+    }
+  }, [jobId, formData]); // Include formData as a dependency
 
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
       const formDataToSend = {
         ...formData,
-        uid: uid,
+        uid: userId,
         created_at: serverTimestamp(),
         jobCategory: formData.jobCategory.split(",").map((cat) => cat.trim()),
       };
-      await addDoc(collection(db, "job-listing"), formDataToSend);
-      toast.success("Job posting added successfully!");
-      // console.log(formDataToSend);
+
+      // Update the job details in Firebase
+      await updateDoc(doc(db, "job-listing", jobId), formDataToSend);
+      toast.success("Job posting updated successfully!");
+
+      // Optionally, you can fetch the updated data again from Firebase
+      fetchJobDetails();
+
+      // Clear the form data
       setFormData({
         title: "",
         salary: "",
@@ -45,7 +95,6 @@ const PostJob = () => {
         company: "",
         description: "",
         jobCategory: "",
-        jobLocation: "",
         jobType: "fullTime",
         jobExperience: "",
         jobVacancy: "",
@@ -53,11 +102,12 @@ const PostJob = () => {
         skills: [],
         newSkill: "",
       });
+
+      // Redirect after successful update
+      navigate("/postedJob");
     } catch (error) {
       console.log(error);
     }
-
-    // Send formDataToSend to your backend or Firebase database
   };
 
   const handleChange = (e) => {

@@ -55,10 +55,8 @@ export const AuthContextProvider = ({ children }) => {
   };
 
   useEffect(() => {
-    const currentUser = () => {
-      auth.onAuthStateChanged((user) => setUser(user));
-    };
-    currentUser();
+    const unsubscribe = auth.onAuthStateChanged((user) => setUser(user));
+    return unsubscribe;
   }, []);
 
   useEffect(() => {
@@ -74,11 +72,10 @@ export const AuthContextProvider = ({ children }) => {
         console.log(error);
       }
     };
-
-    setTimeout(() => {
+    if (jobDetails.length === 0) {
       fetchJobDetails();
-    }, 300);
-  }, []);
+    }
+  }, [jobDetails]);
 
   useEffect(() => {
     const fetchData = async () => {
@@ -104,10 +101,10 @@ export const AuthContextProvider = ({ children }) => {
       }
     };
 
-    setTimeout(() => {
+    if (userId && bookmarkedJobs.length === 0 && appliedJobPost.length === 0) {
       fetchData();
-    }, 300);
-  }, [userId]);
+    }
+  }, [userId, bookmarkedJobs, appliedJobPost]);
 
   useEffect(() => {
     if (userId) {
