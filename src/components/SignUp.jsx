@@ -4,6 +4,7 @@ import { NavLink, useNavigate } from "react-router-dom";
 import { auth } from "../firebase";
 import { createUserWithEmailAndPassword } from "firebase/auth";
 import { toast } from "react-toastify";
+import { useAuth } from "../context/AuthContext";
 
 const SignUp = () => {
   const navigate = useNavigate();
@@ -11,12 +12,12 @@ const SignUp = () => {
   const [password, setPassword] = useState("");
   const [username, setUsername] = useState("");
   const [phone, setPhone] = useState("");
-
+  // SignUp using Context API
+  const { SignUp } = useAuth();
   const signupWithUsernameAndPassword = async (e) => {
     e.preventDefault();
-
     try {
-      await createUserWithEmailAndPassword(auth, email, password);
+      await SignUp(email, password);
       toast.success("registration successfull");
       navigate("/login");
     } catch {

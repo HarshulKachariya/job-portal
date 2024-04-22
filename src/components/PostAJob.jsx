@@ -45,6 +45,7 @@ const PostJob = () => {
         company: "",
         description: "",
         jobCategory: "",
+        jobLocation: "",
         jobType: "fullTime",
         jobExperience: "",
         jobVacancy: "",
@@ -157,6 +158,15 @@ const PostJob = () => {
             onChange={handleChange}
             placeholder={"e.g., Software Engineering, Marketing"}
             id="jobCategory"
+          />
+          <label>Job Location:</label>
+          <InputBox
+            type="text"
+            onFocus={"jobLocation"}
+            value={formData.jobLocation}
+            onChange={handleChange}
+            placeholder={"e.g., NYC"}
+            id="jobLocation"
           />
           <select
             name="jobType"

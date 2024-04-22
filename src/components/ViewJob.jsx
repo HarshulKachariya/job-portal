@@ -1,11 +1,7 @@
 import React, { useEffect, useState } from "react";
 import Card from "./Card";
 
-import { db } from "../firebase";
-import { collection, getDocs } from "firebase/firestore";
-
-import { ThreeDots } from "react-loader-spinner";
-import { Tuple } from "@reduxjs/toolkit";
+import { useAuth } from "../context/AuthContext";
 import Loader from "./Loader";
 
 const ViewJob = () => {
@@ -13,28 +9,13 @@ const ViewJob = () => {
 
   const [isLoading, setIsLoading] = useState(true);
 
+  const { jobDetails } = useAuth();
+
   useEffect(() => {
-    const fetchSavedJobs = async () => {
-      try {
-        const tempJobs = [];
-        const querySnapshot = await getDocs(collection(db, "job-listing"));
-        querySnapshot.forEach((doc) => {
-          tempJobs.push({ data: doc.data(), id: doc.id });
-        });
-        setJobs(tempJobs);
-        setIsLoading(false);
-      } catch (error) {
-        console.error("Error fetching jobs:", error);
-      }
-    };
-
-    // console.log(jobs);
-
-    setTimeout(() => {
-      fetchSavedJobs();
-      // querySnapshot();
-    }, 1000);
-  }, []);
+    setJobs(jobDetails);
+    setIsLoading(false);
+    console.log(jobDetails);
+  }, [jobDetails]);
 
   return (
     <div className="px-10 sm:px-10 py-20 md:px-10 w-full h-full">

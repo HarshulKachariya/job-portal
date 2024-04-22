@@ -33,6 +33,7 @@ import { auth } from "./firebase.js";
 import Loader from "./components/Loader.jsx";
 import ErrorPage from "./components/ErrorPage.jsx";
 import PrivateRoute from "./components/PrivateRoute.jsx";
+import { AuthContextProvider } from "./context/AuthContext.jsx";
 
 const AppWithRouter = () => {
   const [authuUser, setUser] = useState(null);
@@ -59,22 +60,16 @@ const AppWithRouter = () => {
           <Route path="about" element={<About />} />
           <Route path="contact" element={<Contact />} />
           <Route path="loader" element={<Loader />} />
-          <Route path="*" element={<Navigate to="/" />} />
 
-          {/* {authuUser ? (
-            <> */}
+          <Route path="*" element={<Navigate to="/" />} />
           <Route path="postAJob" element={<PostAJob />} />
           <Route path="postedJob" element={<PostedJob />} />
           <Route path="dashboard" element={<Dashboard />} />
           <Route path="appliedJob/:id" element={<AppliedJob />} />
           <Route path="details/:id" element={<DisplayDetails />} />
           <Route path="viewJob" element={<ViewJob />} />
-          {/* </>
-          ) : (
-            <> */}
+
           <Route path="logout" element={<SignOut />} />
-          {/* </>
-          )} */}
         </Route>
       </Routes>
     </Router>
@@ -84,7 +79,9 @@ const AppWithRouter = () => {
 ReactDOM.createRoot(document.getElementById("root")).render(
   <>
     <Provider store={store}>
-      <AppWithRouter />
+      <AuthContextProvider>
+        <AppWithRouter />
+      </AuthContextProvider>
     </Provider>
     <ToastContainer />
   </>

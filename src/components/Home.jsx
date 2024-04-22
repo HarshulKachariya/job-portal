@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
 
-import { NavLink } from "react-router-dom";
+import { NavLink, useNavigate } from "react-router-dom";
 import FeatureSection from "./Feature";
 import ReviewSection from "./ReviewSection";
 
@@ -11,19 +11,20 @@ import { auth } from "../firebase";
 function Home() {
   const [isLogedin, setIsLogedIn] = useState(false);
   const user = auth.currentUser;
+  const navigate = useNavigate();
 
   const handleLogout = () => {
     auth.signOut();
   };
 
   useEffect(() => {
-    if (user) {
+    if (localStorage.getItem("token")) {
       setIsLogedIn(true);
     } else {
       setIsLogedIn(false);
     }
     return () => {};
-  }, []);
+  }, [localStorage.getItem("token")]);
 
   return (
     <>

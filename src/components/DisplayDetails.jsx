@@ -9,26 +9,24 @@ import { FaRegBookmark, FaBookmark } from "react-icons/fa6";
 import { FiUserPlus } from "react-icons/fi";
 import { NavLink, useParams } from "react-router-dom";
 import { db, auth } from "../firebase";
-import {
-  collection,
-  doc,
-  getDoc,
-  getDocs,
-  serverTimestamp,
-} from "firebase/firestore";
+import { doc, getDoc, serverTimestamp } from "firebase/firestore";
 
 import { addPost, removePost } from "../store/AppliedJobSlice";
 import { useDispatch } from "react-redux";
 import { toast } from "react-toastify";
 
+import { useAuth } from "../context/AuthContext";
+
 import Loader from "./Loader";
 
 const DisplayDetails = () => {
   const [bookMark, setBookMark] = useState(false);
-  const [jobDetails, setJobDetails] = useState(null);
+  const [job, setJob] = useState([]);
   const [isLoadding, setIsLoadding] = useState(true);
   const { id } = useParams();
   const dispatch = useDispatch();
+
+  const { jobDetails } = useAuth();
 
   const userId = auth.currentUser;
 
@@ -69,20 +67,19 @@ const DisplayDetails = () => {
 
   useEffect(() => {
     const fetchJobDetails = async () => {
+      const temp = [];
       try {
-        const docRef = doc(db, "job-listing", id);
-        const docSnap = await getDoc(docRef);
-        if (docSnap.exists()) {
-          setJobDetails(docSnap.data());
-          setIsLoadding(false);
-        } else {
-          console.log("No such document!");
-        }
+        const setJobs = jobDetails.filter((jobId) => jobId.id == id);
+        setJobs.map((job) => {
+          temp.push({ ...job.data, id: job.id });
+        });
+        setJob(temp);
+        setIsLoadding(false);
       } catch (error) {
+        setJob(null);
         console.error("Error fetching job details:", error);
       }
     };
-
     setTimeout(() => {
       fetchJobDetails();
     }, 300);
@@ -90,7 +87,6 @@ const DisplayDetails = () => {
 
   const handleClickUnset = (postId) => {
     dispatch(removePost(postId));
-
     // Remove postId from savedPosts array in cookie
     const savedPosts = getCookieArray("savedPosts");
     const updatedSavedPosts = savedPosts.filter((postId) => postId !== id);
@@ -99,14 +95,26 @@ const DisplayDetails = () => {
     toast.success("post unsaved successfully");
   };
 
+  // get the job details for pass to the save post
+  const jobDetail = [];
+  job.map((job) => {
+    jobDetail.push({
+      jobDeadline: job.jobDeadline,
+      title: job.title,
+      company: job.company,
+      salary: job.salary,
+      save_id: job.id,
+    });
+  });
+  // console.log(...jobDetail);
+
   const handleClickSet = () => {
     try {
       // Add postId to savedPosts array in cookie
       const savedPosts = getCookieArray("savedPosts");
       const updatedSavedPosts = [...savedPosts, id];
       setCookieArray("savedPosts", updatedSavedPosts, 365);
-
-      const { jobDeadline, title, company, salary } = jobDetails;
+      const { jobDeadline, title, company, salary } = jobDetail[0];
       dispatch(
         addPost({
           save_id: id,
@@ -132,9 +140,12 @@ const DisplayDetails = () => {
         <Loader />
       ) : (
         <div className="px-4 sm:px-6 md:px-8 lg:px-10 py-20 w-full">
-          {jobDetails && (
+          {job.map((job) => (
             <>
-              <div className="flex justify-center items-center mb-6">
+              <div
+                className="flex justify-center items-center mb-6"
+                key={job.id}
+              >
                 <h1 className="text-3xl sm:text-4xl lg:text-5xl text-emerald-600 font-bold">
                   Job Details
                 </h1>
@@ -148,7 +159,7 @@ const DisplayDetails = () => {
                       <h1 className="font-semibold text-base">
                         Jobposter{" "}
                         <span className="font-normal text-base">
-                          {jobDetails.company}
+                          {job.company}
                         </span>
                       </h1>
                     </div>
@@ -159,7 +170,7 @@ const DisplayDetails = () => {
                       <h1 className="font-semibold text-base">
                         Email{" "}
                         <span className="font-normal text-base">
-                          {jobDetails.email}
+                          {job.email}
                         </span>
                       </h1>
                     </div>
@@ -170,7 +181,7 @@ const DisplayDetails = () => {
                       <h1 className="font-semibold text-base">
                         Location{" "}
                         <span className="font-normal text-base">
-                          {jobDetails.location}
+                          {job.jobLocation}
                         </span>
                       </h1>
                     </div>
@@ -183,7 +194,7 @@ const DisplayDetails = () => {
                       <h1 className="font-semibold text-base">
                         Category{" "}
                         <span className="font-normal text-base ">
-                          {jobDetails.jobCategory}
+                          {job.jobCategory}
                         </span>
                       </h1>
                     </div>
@@ -194,7 +205,7 @@ const DisplayDetails = () => {
                       <h1 className="font-semibold text-base">
                         Job Type{" "}
                         <span className="font-normal text-base">
-                          {jobDetails.jobType}
+                          {job.jobType}
                         </span>
                       </h1>
                     </div>
@@ -205,7 +216,7 @@ const DisplayDetails = () => {
                       <h1 className="font-semibold text-base">
                         Salary{" "}
                         <span className="font-normal text-base">
-                          {jobDetails.salary} $ / month
+                          {job.salary} $ / month
                         </span>
                       </h1>
                     </div>
@@ -220,7 +231,7 @@ const DisplayDetails = () => {
                   />
                 ) : (
                   <FaBookmark
-                    onClick={() => handleClickUnset(id)}
+                    onClick={() => handleClickUnset(job.id)}
                     className="text-emerald-600 text-4xl"
                   />
                 )}
@@ -233,7 +244,7 @@ const DisplayDetails = () => {
                   <h1 className="font-bold text-xl text-emerald-600 mb-4">
                     Job Description
                   </h1>
-                  <p>{jobDetails.description}</p>
+                  <p>{job.description}</p>
                 </div>
                 <div className="p-4 bg-gray-100  rounded-lg hover:shadow-lg hover:transition-all hover:duration-300 hover:ease-linear">
                   <h1 className="font-bold text-xl text-emerald-600 mb-4">
@@ -246,7 +257,7 @@ const DisplayDetails = () => {
                         <h1 className="font-semibold text-base">
                           Total vacancies{" "}
                           <span className="font-normal text-base">
-                            {jobDetails.jobVacancy}
+                            {job.jobVacancy}
                           </span>
                         </h1>
                       </div>
@@ -257,7 +268,7 @@ const DisplayDetails = () => {
                         <h1 className="font-semibold text-base">
                           Deadline{" "}
                           <span className="font-normal text-base">
-                            {jobDetails.jobDeadline}
+                            {job.jobDeadline}
                           </span>
                         </h1>
                       </div>
@@ -268,7 +279,7 @@ const DisplayDetails = () => {
                         <h1 className="font-semibold text-base">
                           Experience Required{" "}
                           <span className="font-normal text-base">
-                            {jobDetails.jobExperience}
+                            {job.jobExperience}
                           </span>
                         </h1>
                       </div>
@@ -277,7 +288,7 @@ const DisplayDetails = () => {
                 </div>
               </div>
             </>
-          )}
+          ))}
         </div>
       )}
     </>

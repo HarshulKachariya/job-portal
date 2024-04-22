@@ -45,12 +45,6 @@ const Header = () => {
     navigate("/login");
   };
 
-  // useEffect(() => {
-  //   if (localStorage.getItem("token")) {
-  //     navigate("/viewJob");
-  //   }
-  // });
-
   return (
     <header className="w-full py-5 sm:px-10 px-10 flex justify-between text-white items-center bg-emerald-600 shadow-xl fixed">
       <nav className="navbar flex w-full ms-0 me-0 relative max-w-[1120px]">

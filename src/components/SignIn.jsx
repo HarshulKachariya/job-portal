@@ -1,31 +1,20 @@
 import React, { useState } from "react";
 import InputBox from "./InputBox";
 import { NavLink, useNavigate } from "react-router-dom";
-import { signInWithEmailAndPassword, onAuthStateChanged } from "firebase/auth";
-import { auth } from "../firebase";
-
 import { toast } from "react-toastify";
+import { useAuth } from "../context/AuthContext";
 
 const SignIn = () => {
   const navigate = useNavigate(); // Initialize the navigate function
-
+  // Login using Context API
+  const { LogIn } = useAuth();
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
 
   const loginWithUsernameAndPassword = async (e) => {
     e.preventDefault();
-
     try {
-      await signInWithEmailAndPassword(auth, email, password);
-      onAuthStateChanged(auth, (user) => {
-        if (user) {
-          const uid = user.uid;
-          // console.log(uid);
-          localStorage.setItem("token", user.refreshToken);
-        } else {
-          console.log("user not signed in");
-        }
-      });
+      await LogIn(email, password);
       toast.success("Logged in successfully!");
       navigate("/viewJob"); // Navigate to the "/postedJob" route after successful login
     } catch (error) {
