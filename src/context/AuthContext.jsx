@@ -27,17 +27,17 @@ export const AuthContextProvider = ({ children }) => {
   const LogIn = async (email, password) => {
     try {
       await signInWithEmailAndPassword(auth, email, password);
-      auth.onAuthStateChanged(async (user) => {
-        if (user) {
-          const users = auth.currentUser;
-          const token = await users.getIdToken();
-          console.log(token);
-          setUser(users);
-          localStorage.setItem("token", token);
-        } else {
-          console.log("not Sign In");
-        }
-      });
+      // auth.onAuthStateChanged(async (user) => {
+      //   if (user) {
+      //     const users = auth.currentUser;
+      //     const token = await users.getIdToken();
+      //     console.log(token);
+      //     setUser(users);
+      //     localStorage.setItem("token", token);
+      //   } else {
+      //     console.log("not Sign In");
+      //   }
+      // });
     } catch (error) {
       console.log(error);
     }

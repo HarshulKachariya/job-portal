@@ -35,6 +35,8 @@ import ErrorPage from "./components/ErrorPage.jsx";
 import PrivateRoute from "./components/PrivateRoute.jsx";
 import { AuthContextProvider } from "./context/AuthContext.jsx";
 
+import Forgotpass from "./components/Forgotpass.jsx";
+
 const AppWithRouter = () => {
   const [authuUser, setUser] = useState(null);
   useEffect(() => {
@@ -55,6 +57,7 @@ const AppWithRouter = () => {
         <Route path="login" element={<SignIn />} />
 
         <Route path="register" element={<SignUp />} />
+        <Route path="forgotpass" element={<Forgotpass />} />
         <Route path="/" element={<PrivateRoute />}>
           <Route index element={<Home />} />
           <Route path="about" element={<About />} />

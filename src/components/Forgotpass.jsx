@@ -2,29 +2,22 @@ import React, { useState } from "react";
 import InputBox from "./InputBox";
 import { NavLink, useNavigate } from "react-router-dom";
 import { toast } from "react-toastify";
-import { signInWithEmailAndPassword } from "firebase/auth";
 import { auth } from "../firebase";
-// import { useAuth } from "../context/AuthContext";
+import { sendPasswordResetEmail } from "firebase/auth";
 
 const SignIn = () => {
   const navigate = useNavigate(); // Initialize the navigate function
-  // Login using Context API
-  // const { LogIn } = useAuth();
+
   const [email, setEmail] = useState("");
-  const [password, setPassword] = useState("");
 
   const loginWithUsernameAndPassword = async (e) => {
     e.preventDefault();
     try {
-      const user = await signInWithEmailAndPassword(auth, email, password);
-      if (user) {
-        const token = auth.currentUser.refreshToken;
-        localStorage.setItem("token", token);
-      }
-      toast.success("Logged in successfully!");
-      navigate("/viewJob"); // Navigate to the "/postedJob" route after successful login
+      await sendPasswordResetEmail(auth, email);
+      console.log("Email set successfully!");
+      navigate("/login");
     } catch (error) {
-      toast.error("You entered a wrong username or password.", error.message); // Log the error message
+      console.error("You entered a wrong username or password.", error.message); // Log the error message
     }
   };
 
@@ -34,7 +27,7 @@ const SignIn = () => {
         className={`max-w-lg mx-auto flex flex-col justify-center items-center gap-x-8 my-4 border-2 border-emerald-600 shadow-xl h-full p-5 rounded-md`}
       >
         <h1 className="md:text-3xl text-2xl border-b-2  border-b-emerald-600 text-center uppercase m-3">
-          Sign In
+          Forgot Password
         </h1>
         <form
           action=""
@@ -54,38 +47,12 @@ const SignIn = () => {
               id="email"
             />
           </div>
-          <div className="w-full">
-            <label>Password:</label>
-            <InputBox
-              type="password"
-              name=""
-              onFocus={"password"}
-              value={password}
-              onChange={(e) => {
-                setPassword(e.target.value);
-              }}
-              placeholder={"Enter password"}
-              id="password"
-            />
-          </div>
-
           <button
             className="w-full p-3 border-[1px] text-white rounded-md bg-emerald-600 "
             onClick={(e) => loginWithUsernameAndPassword(e)}
           >
             Submit
           </button>
-          <h3>
-            don't have an account?{" "}
-            <NavLink to="/register" className="hover:underline">
-              Sign Up
-            </NavLink>
-          </h3>
-          <h3>
-            <NavLink to="/forgotpass" className="hover:underline">
-              forgot password
-            </NavLink>
-          </h3>
         </form>
       </div>
     </div>
