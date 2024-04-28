@@ -146,7 +146,7 @@ const Contact = () => {
           />
 
           <button className="w-full p-3 border-[1px] text-white rounded-md bg-emerald-600 ">
-            Submit
+            Send Application
           </button>
         </form>
       </div>

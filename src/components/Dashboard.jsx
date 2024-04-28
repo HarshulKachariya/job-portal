@@ -101,7 +101,7 @@ const Dashboard = () => {
                     <TableCell align="center">
                       <NavLink
                         to={`/details/${row.id}`}
-                        className="border-emerald-600 border p-1 rounded-md hover:text-white hover:bg-emerald-600"
+                        className="bg-zinc-300 border p-1 rounded-md hover:text-white hover:bg-emerald-600"
                       >
                         {row.status}
                       </NavLink>
