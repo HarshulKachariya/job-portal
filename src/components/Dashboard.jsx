@@ -177,9 +177,8 @@ const Dashboard = () => {
                       </button>
                     </TableCell>
                     <TableCell align="center">
-                      <NavLink
-                        to={`/details/${row.id}`}
-                        className={`bg-zinc-300 border p-2 rounded-md cursor-default text-md capitalize  ${
+                      <div
+                        className={` border p-2 rounded-md cursor-default text-md capitalize  ${
                           row.status === "approve"
                             ? "bg-green-300 text-green-700"
                             : "" || row.status === "reject"
@@ -188,11 +187,13 @@ const Dashboard = () => {
                             ? "bg-yellow-400"
                             : "" || row.status === "offer"
                             ? "bg-green-400"
+                            : "" || row.status === "pending"
+                            ? "bg-zinc-400"
                             : ""
                         }`}
                       >
                         {row.status}
-                      </NavLink>
+                      </div>
                     </TableCell>
                   </TableRow>
                 ))}
@@ -270,7 +271,7 @@ const Dashboard = () => {
                 </TableRow>
               </TableHead>
               <TableBody>
-                {applications.map((item) => (
+                {applications?.map((item) => (
                   <TableRow key={item.id}>
                     <TableCell>{item.title}</TableCell>
                     <TableCell align="center">{item.company}</TableCell>
@@ -298,7 +299,7 @@ const Dashboard = () => {
           </TableContainer>
         </div>
       ) : (
-        <div>No application</div>
+        <div></div>
       )}
     </div>
   );
