@@ -7,9 +7,10 @@ import { MdCategory } from "react-icons/md";
 import { HiCurrencyRupee } from "react-icons/hi";
 import { FaRegBookmark, FaBookmark } from "react-icons/fa6";
 import { FiUserPlus } from "react-icons/fi";
-import { NavLink, useParams } from "react-router-dom";
+import { NavLink, useNavigate, useParams } from "react-router-dom";
 import { db, auth } from "../firebase";
-import { doc, getDoc, serverTimestamp } from "firebase/firestore";
+import { deleteDoc, serverTimestamp } from "firebase/firestore";
+import { collection, doc } from "firebase/firestore";
 
 import { addPost, removePost } from "../store/AppliedJobSlice";
 import { useDispatch } from "react-redux";
@@ -20,14 +21,18 @@ import { useAuth } from "../context/AuthContext";
 import Loader from "./Loader";
 
 const DisplayDetails = () => {
+  const navigate = useNavigate();
+
   const [bookMark, setBookMark] = useState(false);
   const [job, setJob] = useState([]);
   const [isLoadding, setIsLoadding] = useState(true);
 
+  const [isDeleting, setIsDeleting] = useState(false);
+
   const { id } = useParams();
   const dispatch = useDispatch();
 
-  const { jobDetails } = useAuth();
+  const { jobDetails, filterAppliedPost } = useAuth();
 
   const userId = auth.currentUser;
 
@@ -135,6 +140,20 @@ const DisplayDetails = () => {
     console.log(id, "applied job id");
   };
 
+  const handleDeletePost = async (id) => {
+    try {
+      setIsDeleting(true);
+      await deleteDoc(doc(db, "job-listing", id));
+      toast.success("Post deleted successfully");
+      navigate("/viewJob");
+    } catch (error) {
+      toast.error("error while deleting post", error);
+      console.log(error);
+    } finally {
+      setIsDeleting(false);
+    }
+  };
+
   return (
     <>
       {isLoadding ? (
@@ -151,7 +170,21 @@ const DisplayDetails = () => {
                   Job Details
                 </h1>
               </div>
-              <ImageCard />
+              <div className="left mb-4 flex items-center justify-center py-2">
+                <img
+                  src="https://randomuser.me/api/portraits/men/67.jpg"
+                  alt="profile"
+                  className="w-20 h-20 rounded-full"
+                />
+                <div className="flex flex-col mx-2 px-2">
+                  <h3 className="text-xl md:text-2xl font-semibold">
+                    {job.company}
+                  </h3>
+                  <h4 className="text-xs sm:text-sm md:text-base text-gray-800">
+                    {job.email}
+                  </h4>
+                </div>
+              </div>
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-6 md:gap-8">
                 <div className="flex flex-col gap-4">
                   <div className="flex items-center">
@@ -238,9 +271,15 @@ const DisplayDetails = () => {
                 )}
                 <div className="rounded-md bg-emerald-600 p-4 text-xl uppercase text-white hover:text-gray-800 cursor-pointer">
                   {isUserPost ? (
-                    <NavLink to={`/appliedJob/${id}`}>Delete Post</NavLink>
+                    <div onClick={() => handleDeletePost(job.id)}>
+                      Delete Post
+                    </div>
                   ) : (
-                    <NavLink to={`/appliedJob/${id}`}>Apply position</NavLink>
+                    <NavLink to={`/appliedJob/${id}`}>
+                      {filterAppliedPost.map((item) =>
+                        item.jobId === job.id ? "Applied" : "Apply"
+                      )}
+                    </NavLink>
                   )}
                 </div>
               </div>
