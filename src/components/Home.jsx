@@ -44,7 +44,7 @@ function Home() {
             <>
               Welcome{" "}
               <span className="text-emerald-600 font-bold">
-                {isLogedin ? user.email : ""}
+                {isLogedin ? user?.email : ""}
               </span>{" "}
               to Job Portal
             </>

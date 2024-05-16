@@ -184,6 +184,10 @@ const Dashboard = () => {
                             ? "bg-green-300 text-green-700"
                             : "" || row.status === "reject"
                             ? "bg-red-300 text-red-700"
+                            : "" || row.status === "interview"
+                            ? "bg-yellow-400"
+                            : "" || row.status === "offer"
+                            ? "bg-green-400"
                             : ""
                         }`}
                       >
@@ -263,7 +267,6 @@ const Dashboard = () => {
                   <TableCell align="center">Company</TableCell>
                   <TableCell align="center">Applicant Name</TableCell>
                   <TableCell align="center">Applicant status</TableCell>
-                  {/* Add any other relevant columns */}
                 </TableRow>
               </TableHead>
               <TableBody>
@@ -277,20 +280,17 @@ const Dashboard = () => {
                         <select
                           name=""
                           id=""
-                          className="bg-zinc-400 p-2  rounded-lg text-md"
+                          className={` bg-slate-100 outline-none p-2  rounded-lg text-md   capitalize `}
                           onChange={(e) => onStatusValueChange(e, item.id)}
                         >
                           <option value="pending">{item.status}</option>
-                          <option value="approve" className="bg-green-400">
-                            Approve
-                          </option>
-                          <option value="reject" className="bg-red-400">
-                            Reject
-                          </option>
+                          <option value="approve">Approve</option>
+                          <option value="reject">Reject</option>
+                          <option value="interview">Interview</option>
+                          <option value="offer">Offer</option>
                         </select>
                       </span>
                     </TableCell>
-                    {/* Render any other relevant data */}
                   </TableRow>
                 ))}
               </TableBody>
