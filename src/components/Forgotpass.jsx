@@ -51,7 +51,7 @@ const SignIn = () => {
             className="w-full p-3 border-[1px] text-white rounded-md bg-emerald-600 "
             onClick={(e) => loginWithUsernameAndPassword(e)}
           >
-            Submit
+            Send mail
           </button>
         </form>
       </div>

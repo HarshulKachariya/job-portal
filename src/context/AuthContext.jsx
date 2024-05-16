@@ -2,7 +2,13 @@ import {
   signInWithEmailAndPassword,
   createUserWithEmailAndPassword,
 } from "firebase/auth";
-import React, { createContext, useState, useContext, useEffect } from "react";
+import React, {
+  createContext,
+  useState,
+  useContext,
+  useEffect,
+  useMemo,
+} from "react";
 
 import { auth, db } from "../firebase";
 
@@ -42,6 +48,7 @@ export const AuthContextProvider = ({ children }) => {
       console.log(error);
     }
   };
+
   const SignUp = async (email, password) => {
     try {
       await createUserWithEmailAndPassword(auth, email, password);
@@ -59,7 +66,7 @@ export const AuthContextProvider = ({ children }) => {
     return unsubscribe;
   }, []);
 
-  useEffect(() => {
+  useMemo(() => {
     const fetchJobDetails = async () => {
       try {
         const tempJob = [];

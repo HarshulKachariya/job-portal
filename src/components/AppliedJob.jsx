@@ -18,7 +18,7 @@ const Contact = () => {
   const user = auth.currentUser;
   const userId = user ? user.uid : null;
   const { id } = useParams();
-  // console.log(id, userId);
+  console.log(id, userId);
   const [jobDetails, setJobDetails] = useState(null);
 
   useEffect(() => {
@@ -47,6 +47,7 @@ const Contact = () => {
     email: "",
     about: "",
     file: "",
+    status: "pending",
   });
 
   const handleChange = (e) => {
@@ -62,7 +63,7 @@ const Contact = () => {
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
-      const { jobDeadline, title, company, salary } = jobDetails;
+      const { jobDeadline, title, company, salary, uid } = jobDetails;
       await addDoc(collection(db, "application"), {
         ...formData,
         applied_job_id: id,
@@ -71,6 +72,7 @@ const Contact = () => {
         title,
         company,
         salary,
+        createJobUserId: uid,
         created_at: serverTimestamp(),
       });
       setFormData({
@@ -146,7 +148,7 @@ const Contact = () => {
           />
 
           <button className="w-full p-3 border-[1px] text-white rounded-md bg-emerald-600 ">
-            Submit
+            Send Application
           </button>
         </form>
       </div>

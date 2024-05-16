@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useMemo } from "react";
 import { BsFillBookmarkStarFill } from "react-icons/bs";
 import { AiOutlineFileDone, AiOutlineDelete } from "react-icons/ai";
 import Table from "@mui/material/Table";
@@ -13,30 +13,94 @@ import { removePost, removeApplyPost } from "../store/AppliedJobSlice";
 import { NavLink } from "react-router-dom";
 import { toast } from "react-toastify";
 import { useAuth } from "../context/AuthContext";
+import { auth, db } from "../firebase";
+import {
+  getDocs,
+  updateDoc,
+  doc,
+  addDoc,
+  collection,
+  query,
+  where,
+} from "firebase/firestore";
 
 const Dashboard = () => {
   const { filterSavePost, filterAppliedPost } = useAuth();
+  const user = useMemo(() => auth.currentUser, []);
+  const userId = useMemo(() => (user ? user.uid : null), []);
+
+  const [toogleModel, setToogleModel] = useState(false);
 
   const [toggle, setToggle] = useState(false);
+  const [applications, setApplications] = useState([]);
+
+  // const [status, setstatus] = useState(null);
+
+  useEffect(() => {
+    const fetchApplicationDetails = async () => {
+      try {
+        const q = query(
+          collection(db, "application"),
+          where("createJobUserId", "==", userId)
+        );
+        const querySnapshots = await getDocs(q);
+        const tempApplications = [];
+
+        querySnapshots.forEach((doc) => {
+          tempApplications.push({ id: doc.id, ...doc.data() });
+        });
+
+        setApplications(tempApplications);
+      } catch (error) {
+        console.error("Error fetching applications:", error);
+      }
+    };
+
+    if (userId) {
+      fetchApplicationDetails();
+    }
+  }, [filterAppliedPost, filterSavePost]);
 
   const dispatch = useDispatch();
 
   const handleClickRemove = (id) => {
     dispatch(removePost(id));
-    toast.success("post unsaved sucessfully");
+    toast.success("Post unsaved successfully");
   };
+
   const handleClickRemoveApply = (id) => {
     dispatch(removeApplyPost(id));
-    toast.success("post unsaved sucessfully");
+    toast.success("Post unsaved successfully");
   };
 
   const toggleClick = () => {
     setToggle(true);
+    setToogleModel(false);
   };
 
   const toggleClick1 = () => {
     setToggle(false);
+    setToogleModel(false);
   };
+
+  const toggleClick2 = () => {
+    setToogleModel(true);
+  };
+
+  const onStatusValueChange = async (e, id) => {
+    const newStatus = e.target.value;
+
+    try {
+      await updateDoc(doc(db, "application", id), {
+        status: newStatus,
+      });
+      toast.success("Status updated successfully");
+    } catch (error) {
+      toast.error("Error updating status", error);
+      console.log(id);
+    }
+  };
+  // console.log(applications);
 
   return (
     <div className="py-20">
@@ -61,9 +125,23 @@ const Dashboard = () => {
             <span className="">{filterSavePost.length}</span>
           </div>
         </div>
+        <div
+          onClick={toggleClick2}
+          className="top h-32 rounded-md border-b-2 border-zinc-600 w-56 bg-neutral-100 flex items-center justify-center gap-3 p-2 cursor-pointer transition-all duration-1000   hover:shadow-xl"
+        >
+          <BsFillBookmarkStarFill className="text-4xl text-emerald-600" />
+          <div className="text-xl font-semibold">
+            <h1 className="">Applications </h1>
+            <span className="">{applications.length}</span>
+          </div>
+        </div>
       </div>
-      {toggle ? (
-        <div className="bottom h-screen w-full bg-neutral-100 mt-5 mb-5 p-5">
+      {toggle || toogleModel == "false" ? (
+        <div
+          className={`bottom h-screen w-full bg-neutral-100 mt-5 mb-5 p-5 ${
+            !toogleModel ? " block" : "hidden"
+          }`}
+        >
           <h1 className="text-2xl ">
             Total Applied Jobs: {filterAppliedPost.length}
           </h1>
@@ -77,7 +155,7 @@ const Dashboard = () => {
                   <TableCell align="center">Company</TableCell>
                   <TableCell align="center">Job Salary</TableCell>
                   <TableCell align="center">Action</TableCell>
-                  <TableCell align="center"></TableCell>
+                  <TableCell align="center">Status</TableCell>
                 </TableRow>
               </TableHead>
               <TableBody>
@@ -101,7 +179,13 @@ const Dashboard = () => {
                     <TableCell align="center">
                       <NavLink
                         to={`/details/${row.id}`}
-                        className="border-emerald-600 border p-1 rounded-md hover:text-white hover:bg-emerald-600"
+                        className={`bg-zinc-300 border p-2 rounded-md cursor-default text-md capitalize  ${
+                          row.status === "approve"
+                            ? "bg-green-300 text-green-700"
+                            : "" || row.status === "reject"
+                            ? "bg-red-300 text-red-700"
+                            : ""
+                        }`}
                       >
                         {row.status}
                       </NavLink>
@@ -113,7 +197,11 @@ const Dashboard = () => {
           </TableContainer>
         </div>
       ) : (
-        <div className="bottom h-screen w-full bg-neutral-100 mt-5 mb-5 p-5">
+        <div
+          className={`bottom h-screen w-full bg-neutral-100 mt-5 mb-5 p-5 ${
+            !toogleModel ? " block" : "hidden"
+          }`}
+        >
           <h1 className="text-2xl ">
             Total save Jobs: {filterSavePost.length}
           </h1>
@@ -151,7 +239,7 @@ const Dashboard = () => {
                     <TableCell align="center">
                       <NavLink
                         to={`/details/${row.save_id}`}
-                        className="border-emerald-600 border p-1 rounded-md hover:text-white hover:bg-emerald-600"
+                        className="border-emerald-600 border p-2 capitalize rounded-md hover:text-white hover:bg-emerald-600"
                       >
                         view details
                       </NavLink>
@@ -162,6 +250,55 @@ const Dashboard = () => {
             </Table>
           </TableContainer>
         </div>
+      )}
+
+      {toogleModel ? (
+        <div className="bottom h-screen w-full bg-neutral-100 mt-5 mb-5 p-5">
+          <h1 className="text-2xl">Total Applications for Posted Jobs</h1>
+          <TableContainer component={Paper}>
+            <Table sx={{ minWidth: 650 }} aria-label="simple table">
+              <TableHead>
+                <TableRow>
+                  <TableCell>Job Title</TableCell>
+                  <TableCell align="center">Company</TableCell>
+                  <TableCell align="center">Applicant Name</TableCell>
+                  <TableCell align="center">Applicant status</TableCell>
+                  {/* Add any other relevant columns */}
+                </TableRow>
+              </TableHead>
+              <TableBody>
+                {applications.map((item) => (
+                  <TableRow key={item.id}>
+                    <TableCell>{item.title}</TableCell>
+                    <TableCell align="center">{item.company}</TableCell>
+                    <TableCell align="center">{item.name}</TableCell>
+                    <TableCell align="center">
+                      <span className="">
+                        <select
+                          name=""
+                          id=""
+                          className="bg-zinc-400 p-2  rounded-lg text-md"
+                          onChange={(e) => onStatusValueChange(e, item.id)}
+                        >
+                          <option value="pending">{item.status}</option>
+                          <option value="approve" className="bg-green-400">
+                            Approve
+                          </option>
+                          <option value="reject" className="bg-red-400">
+                            Reject
+                          </option>
+                        </select>
+                      </span>
+                    </TableCell>
+                    {/* Render any other relevant data */}
+                  </TableRow>
+                ))}
+              </TableBody>
+            </Table>
+          </TableContainer>
+        </div>
+      ) : (
+        <div>No application</div>
       )}
     </div>
   );

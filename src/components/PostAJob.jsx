@@ -6,6 +6,7 @@ import {
   collection,
   doc,
   updateDoc,
+  addDoc,
   serverTimestamp,
   getDoc,
 } from "firebase/firestore";
@@ -81,11 +82,14 @@ const PostJob = () => {
       };
 
       // Update the job details in Firebase
-      await updateDoc(doc(db, "job-listing", jobId), formDataToSend);
-      toast.success("Job posting updated successfully!");
+      // await updateDoc(doc(db, "job-listing", jobId), formDataToSend);
+      // toast.success("Job posting updated successfully!");
 
+      // Create a new job listing in Firebase
+      await addDoc(collection(db, "job-listing"), formDataToSend);
+      toast.success("Job posting created successfully!");
       // Optionally, you can fetch the updated data again from Firebase
-      fetchJobDetails();
+      // fetchJobDetails();
 
       // Clear the form data
       setFormData({
@@ -95,7 +99,7 @@ const PostJob = () => {
         company: "",
         description: "",
         jobCategory: "",
-        jobType: "fullTime",
+        jobType: "",
         jobExperience: "",
         jobVacancy: "",
         jobDeadline: "",
@@ -106,7 +110,10 @@ const PostJob = () => {
       // Redirect after successful update
       navigate("/postedJob");
     } catch (error) {
-      console.log(error);
+      console.error("Error updating job listing:", error);
+      toast.error(
+        "An error occurred while updating the job listing. Please try again."
+      );
     }
   };
 
