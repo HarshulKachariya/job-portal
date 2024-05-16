@@ -150,8 +150,8 @@ const PostJob = () => {
   };
 
   return (
-    <div className="px-10 sm:px-10 py-20 md:px-10 ">
-      <h1 className="text-3xl font-semibold text-center mb-6 uppercase">
+    <div className=" px-6 py-24 ">
+      <h1 className="px-4 mx-2 py-2 uppercase tracking-wider border-b-2 border-b-emerald-600 md:text-3xl  text-2xl font-semibold">
         enter job details
       </h1>
       <div className="max-w-lg mx-auto">

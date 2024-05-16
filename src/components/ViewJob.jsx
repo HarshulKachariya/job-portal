@@ -18,11 +18,12 @@ const ViewJob = () => {
   }, [jobDetails]);
 
   return (
-    <div className="px-10 sm:px-10 py-20 md:px-10 w-full h-full">
-      <h1 className="px-4 mx-2 py-2 uppercase tracking-wider border-b-2 border-b-emerald-600 text-3xl font-semibold">
+    <div className="px-6 py-24 ">
+      <h1 className="px-4 mx-2 py-2 uppercase tracking-wider border-b-2 border-b-emerald-600 md:text-3xl  text-2xl font-semibold">
         Available Jobs
       </h1>
-      <div className="grid grid-cols-1 md:grid-cols-2">
+
+      <div className="grid grid-cols-1 md:grid-cols-2 ">
         {isLoading ? (
           <Loader />
         ) : (

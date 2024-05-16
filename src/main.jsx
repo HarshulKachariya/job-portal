@@ -36,6 +36,9 @@ import PrivateRoute from "./components/PrivateRoute.jsx";
 import { AuthContextProvider } from "./context/AuthContext.jsx";
 
 import Forgotpass from "./components/Forgotpass.jsx";
+import FaqPage from "./components/Faqs.jsx";
+import PrivacyPolicyPage from "./components/PrivacyAndPolicy.jsx";
+import TermsOfServicePage from "./components/TermOfService.jsx";
 
 const AppWithRouter = () => {
   const [authuUser, setUser] = useState(null);
@@ -72,6 +75,9 @@ const AppWithRouter = () => {
           <Route path="appliedJob/:id" element={<AppliedJob />} />
           <Route path="details/:id" element={<DisplayDetails />} />
           <Route path="viewJob" element={<ViewJob />} />
+          <Route path="faqs" element={<FaqPage />} />
+          <Route path="privacyAndPolicy" element={<PrivacyPolicyPage />} />
+          <Route path="termOfService" element={<TermsOfServicePage />} />
 
           <Route path="logout" element={<SignOut />} />
         </Route>

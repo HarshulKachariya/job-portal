@@ -28,7 +28,7 @@ function Home() {
 
   return (
     <>
-      <div className="flex flex-col md:flex-row bg-gray-100 max-h-screen">
+      <div className="flex flex-col md:flex-row bg-gray-100 max-h-screen md:py-24">
         {/* Left Section - Image */}
         <div className="w-full pt-10 flex-1 max-auto md:w-1/2">
           <img

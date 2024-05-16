@@ -3,11 +3,23 @@ import { AiOutlineArrowRight } from "react-icons/ai";
 import ImageCard from "./ImageCard";
 import { NavLink } from "react-router-dom";
 
-const Card = ({ salary, jobDeadline, title, id }) => {
+const Card = ({ salary, jobDeadline, title, id, company, email }) => {
   return (
     <div>
       <div className="top w-full cursor-pointer transition-all duration-1000 md:w-[90%] m-4 border hover:shadow-xl rounded px-4 md:flex md:flex-wrap">
-        <ImageCard />
+        <div className="left mb-4 flex items-center justify-center py-2">
+          <img
+            src="https://randomuser.me/api/portraits/men/67.jpg"
+            alt="profile"
+            className="w-20 h-20 rounded-full"
+          />
+          <div className="flex flex-col mx-2 px-2">
+            <h3 className="text-xl md:text-2xl font-semibold">{company}</h3>
+            <h4 className="text-xs sm:text-sm md:text-base text-gray-800">
+              {email}
+            </h4>
+          </div>
+        </div>
 
         <div className="right mb-4 flex items-start justify-center py-2 flex-col">
           <div className="flex px-2 py-2 flex-row items-center justify-center">

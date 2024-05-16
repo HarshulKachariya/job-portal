@@ -49,7 +49,7 @@ const Contact = () => {
   };
 
   return (
-    <section className="px-10  py-20 md:px-10">
+    <section className="px-6  py-24 md:px-10">
       <h1 class="text-3xl font-semibold text-center mb-6 uppercase">
         Contact us
       </h1>

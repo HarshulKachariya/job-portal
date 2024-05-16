@@ -24,10 +24,10 @@ const Footer = () => {
           </div>
           <div>
             <h2 className="text-lg font-semibold mb-4">Resources</h2>
-            <ul className="space-y-2">
-              <li>FAQs</li>
-              <li>Privacy Policy</li>
-              <li>Terms of Service</li>
+            <ul className="space-y-2 flex flex-col">
+              <NavLink to={`faqs`}>FAQs</NavLink>
+              <NavLink to={`privacyAndPolicy`}>Privacy Policy</NavLink>
+              <NavLink to={`termOfService`}>Terms of Service</NavLink>
             </ul>
           </div>
           <div>
