@@ -186,6 +186,7 @@ const Dashboard = () => {
                             ? "bg-red-300 text-red-700"
                             : ""
                         }`}
+                        className="bg-zinc-300 border p-1 rounded-md hover:text-white hover:bg-emerald-600"
                       >
                         {row.status}
                       </NavLink>
