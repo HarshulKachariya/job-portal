@@ -220,7 +220,7 @@ const Dashboard = () => {
                   <TableCell align="center">Company</TableCell>
                   <TableCell align="center">Job Salary</TableCell>
                   <TableCell align="center">Action</TableCell>
-                  <TableCell align="center"></TableCell>
+                  <TableCell align="center">Details</TableCell>
                 </TableRow>
               </TableHead>
               <TableBody>
@@ -244,7 +244,7 @@ const Dashboard = () => {
                     <TableCell align="center">
                       <NavLink
                         to={`/details/${row.save_id}`}
-                        className="border-emerald-600 border p-2 capitalize rounded-md hover:text-white hover:bg-emerald-600"
+                        className="border-emerald-600 w-full border p-2 capitalize rounded-md hover:text-white hover:bg-emerald-600"
                       >
                         view details
                       </NavLink>

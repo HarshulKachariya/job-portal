@@ -39,11 +39,11 @@ const PostedJob = () => {
   };
 
   return (
-    <div className="px-10 sm:px-10 py-20 md:px-10 w-full h-full">
-      <h1 className="px-4 mx-2 py-2 uppercase tracking-wider border-b-2 border-b-emerald-600 text-3xl font-semibold">
+    <div className="px-6 py-24">
+      <h1 className="px-4 mx-2 py-2 uppercase tracking-wider border-b-2 border-b-emerald-600 md:text-3xl  text-2xl font-semibold">
         Posted Jobs
       </h1>
-      <div className="grid grid-cols-1 md:grid-cols-2">
+      <div className="grid grid-cols-1 md:grid-cols-2 ">
         {loading ? (
           <Loader />
         ) : filteredJobs.length > 0 ? (
@@ -53,9 +53,9 @@ const PostedJob = () => {
             </div>
           ))
         ) : (
-          <h1 className="w-screen h-screen text-center text-2xl font-semibold">
-            No Jobs Posted
-          </h1>
+          <div className="flex justify-center items-center mt-5">
+            <h1 className=" text-2xl font-semibold ">No Jobs Posted</h1>
+          </div>
         )}
       </div>
     </div>
