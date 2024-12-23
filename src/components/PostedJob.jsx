@@ -13,6 +13,7 @@ const PostedJob = () => {
 
   const [jobs, setJobs] = useState([]);
   const [loading, setLoading] = useState(true);
+  const [isUserPost, setIsUserPost] = useState(true);
 
   const user = auth.currentUser;
   const userId = user ? user.uid : null;
@@ -20,7 +21,7 @@ const PostedJob = () => {
   useEffect(() => {
     setJobs(jobDetails);
     setLoading(false);
-  }, []);
+  }, [userId, jobDetails]);
 
   const filteredJobs = useMemo(() => {
     const temp = [];
@@ -28,6 +29,7 @@ const PostedJob = () => {
       jobs.forEach((job) => {
         if (job.data.uid === userId) {
           temp.push(job);
+          setIsUserPost(true);
         }
       });
     }
@@ -49,7 +51,7 @@ const PostedJob = () => {
         ) : filteredJobs.length > 0 ? (
           filteredJobs.map((job) => (
             <div key={job.id} onClick={() => redirectToEditJob(job.id)}>
-              <Card {...job.data} id={job.id} />
+              <Card {...job.data} id={job.id} isUserPost={isUserPost} />
             </div>
           ))
         ) : (

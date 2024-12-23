@@ -3,7 +3,15 @@ import { AiOutlineArrowRight } from "react-icons/ai";
 import ImageCard from "./ImageCard";
 import { NavLink } from "react-router-dom";
 
-const Card = ({ salary, jobDeadline, title, id, company, email }) => {
+const Card = ({
+  salary,
+  jobDeadline,
+  title,
+  id,
+  company,
+  email,
+  isUserPost,
+}) => {
   return (
     <div>
       <div className="top w-full cursor-pointer transition-all duration-1000 md:w-[90%] m-4 border hover:shadow-xl rounded px-4 md:flex md:flex-wrap">
@@ -43,7 +51,8 @@ const Card = ({ salary, jobDeadline, title, id, company, email }) => {
           </span>
           <NavLink to={`/details/${id}`}>
             <button className="my-2 py-2 px-4 border border-emerald-600 rounded flex items-center justify-center transition-all duration-700 hover:bg-emerald-600 hover:text-white text-emerald-600 font-semibold">
-              View Details <AiOutlineArrowRight className="mx-2 text-xl" />
+              {!isUserPost ? "View Details" : "Update Details"}{" "}
+              <AiOutlineArrowRight className="mx-2 text-xl" />
             </button>
           </NavLink>
         </div>
