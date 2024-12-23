@@ -2,17 +2,10 @@ import {
   signInWithEmailAndPassword,
   createUserWithEmailAndPassword,
 } from "firebase/auth";
-import React, {
-  createContext,
-  useState,
-  useContext,
-  useEffect,
-  useMemo,
-} from "react";
+import React, { createContext, useState, useContext, useEffect } from "react";
 
 import { auth, db } from "../firebase";
-
-import { collection, getDocs, addDoc, doc } from "firebase/firestore";
+import { collection, getDocs } from "firebase/firestore";
 
 const AuthContext = createContext();
 
@@ -24,26 +17,19 @@ export const AuthContextProvider = ({ children }) => {
   const [bookmarkedJobs, setBookmarkedJobs] = useState([]);
   const [appliedJobPost, setAppliedPost] = useState([]);
   const [filterSavePost, setFilterSavePost] = useState([]);
-
   const [filterAppliedPost, setFilterAppliedPost] = useState([]);
-
   const userId = user ? user.uid : null;
-  // console.log(user);
+
+  // Redirect unauthenticated users to login page
+  // useEffect(() => {
+  //   if (!user && !userId) {
+  //     window.location.href = "/login";
+  //   }
+  // }, [user, userId]);
 
   const LogIn = async (email, password) => {
     try {
       await signInWithEmailAndPassword(auth, email, password);
-      // auth.onAuthStateChanged(async (user) => {
-      //   if (user) {
-      //     const users = auth.currentUser;
-      //     const token = await users.getIdToken();
-      //     console.log(token);
-      //     setUser(users);
-      //     localStorage.setItem("token", token);
-      //   } else {
-      //     console.log("not Sign In");
-      //   }
-      // });
     } catch (error) {
       console.log(error);
     }
@@ -61,12 +47,16 @@ export const AuthContextProvider = ({ children }) => {
     auth.signOut();
   };
 
+  // Track user authentication state
   useEffect(() => {
     const unsubscribe = auth.onAuthStateChanged((user) => setUser(user));
     return unsubscribe;
   }, []);
 
-  useMemo(() => {
+  // Fetch job details
+  useEffect(() => {
+    let isMounted = true;
+
     const fetchJobDetails = async () => {
       try {
         const tempJob = [];
@@ -74,17 +64,25 @@ export const AuthContextProvider = ({ children }) => {
         querySnapshot.forEach((doc) => {
           tempJob.push({ data: doc.data(), id: doc.id });
         });
-        setJobDetails(tempJob);
+        if (isMounted) setJobDetails(tempJob);
       } catch (error) {
         console.log(error);
       }
     };
+
     if (jobDetails.length === 0) {
       fetchJobDetails();
     }
+
+    return () => {
+      isMounted = false;
+    };
   }, [jobDetails]);
 
+  // Fetch bookmarked and applied jobs
   useEffect(() => {
+    let isMounted = true;
+
     const fetchData = async () => {
       try {
         if (userId) {
@@ -93,15 +91,14 @@ export const AuthContextProvider = ({ children }) => {
           querySnapshot.forEach((doc) => {
             tempJobs.push({ id: doc.id, ...doc.data() });
           });
-          setBookmarkedJobs(tempJobs);
+          if (isMounted) setBookmarkedJobs(tempJobs);
 
           const tempAppliedJobs = [];
           const querySnapshots = await getDocs(collection(db, "application"));
-
           querySnapshots.forEach((doc) => {
             tempAppliedJobs.push({ id: doc.id, ...doc.data() });
           });
-          setAppliedPost(tempAppliedJobs);
+          if (isMounted) setAppliedPost(tempAppliedJobs);
         }
       } catch (error) {
         console.error("Error fetching jobs:", error);
@@ -111,11 +108,15 @@ export const AuthContextProvider = ({ children }) => {
     if (userId && bookmarkedJobs.length === 0 && appliedJobPost.length === 0) {
       fetchData();
     }
+
+    return () => {
+      isMounted = false;
+    };
   }, [userId, bookmarkedJobs, appliedJobPost]);
 
+  // Filter bookmarked jobs by user ID
   useEffect(() => {
     if (userId) {
-      // Filter bookmarked jobs for the current user
       const filteredJobs = bookmarkedJobs.filter(
         (job) => job.userId === userId
       );
@@ -123,9 +124,9 @@ export const AuthContextProvider = ({ children }) => {
     }
   }, [bookmarkedJobs, userId]);
 
+  // Filter applied jobs by user ID
   useEffect(() => {
     if (userId) {
-      // Filter bookmarked jobs for the current user
       const filteredJobs = appliedJobPost.filter(
         (job) => job.userId === userId
       );
@@ -144,5 +145,6 @@ export const AuthContextProvider = ({ children }) => {
     filterSavePost,
     filterAppliedPost,
   };
+
   return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>;
 };

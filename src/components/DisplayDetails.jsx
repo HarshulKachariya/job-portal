@@ -87,7 +87,7 @@ const DisplayDetails = () => {
       }
     };
     setTimeout(fetchJobDetails(), 300);
-  }, [id]);
+  }, [id, jobDetails]);
 
   const handleClickUnset = (postId) => {
     dispatch(removePost(postId));
@@ -111,8 +111,7 @@ const DisplayDetails = () => {
     });
   });
   // console.log(job, userId.uid);
-  const isUserPost = job.some((job) => job.uid === userId.uid);
-  // console.log(isUserPost);
+  const isUserPost = userId ? job.some((job) => job.uid == userId.uid) : false;
 
   const handleClickSet = () => {
     try {
@@ -275,11 +274,13 @@ const DisplayDetails = () => {
                       Delete Post
                     </div>
                   ) : (
-                    <NavLink to={`/appliedJob/${id}`}>
-                      {filterAppliedPost.map((item) =>
-                        item.jobId === job.id ? "Applied" : "Apply"
-                      )}
-                    </NavLink>
+                    <div onClick={() => navigate(`/appliedJob/${id}`)}>
+                      {filterAppliedPost.length && filterAppliedPost.length > 0
+                        ? filterAppliedPost.map((item) =>
+                            item.jobId === job.id ? "Applied" : "Apply"
+                          )
+                        : "Apply"}
+                    </div>
                   )}
                 </div>
               </div>
